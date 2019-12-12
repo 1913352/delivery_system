@@ -136,21 +136,19 @@ int str_createSystem(char* filepath) {
 		
 		deliverySystem = (storage_t**)malloc(systemSize[0] *sizeof(storage_t *));  //allocate row
 		
-		for(i=0;i<systemSize[0];i++)
+		for(x=0;x<systemSize[0];x++)
 		{
-			deliverySystem[i] = (storage_t *) malloc(systemSize[i] * sizeof(storage_t));  //allocate column
-		}
-		
-		for (x=0;x<systemSize[0];x++)
-		{
+			deliverySystem[x] = (storage_t *) malloc(systemSize[1] * sizeof(storage_t));  //allocate column
+			
 			for (y=0;y<systemSize[1];y++)
 			{
 				initStorage(x,y);
-			}
+			}	
 		}
-	
-	
+		
+
 		fscanf(fp, "%s", &masterPassword);	//set masterpassword
+		
 		while (feof(fp)==0)
 		{
 			int x=-1, y=-1;   //set x,y -> -1
@@ -180,14 +178,11 @@ int str_createSystem(char* filepath) {
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
 
-	int i,j;
+	int i;
 	
 	for(i=0;i<systemSize[0];i++)
 	{
-		for (j=0;j<systemSize[1];j++)
-		{
-			free(deliverySystem[i][j].context);
-		}
+		free(deliverySystem[i]);
 		
 	}
 	free(deliverySystem);
@@ -254,23 +249,26 @@ int str_checkStorage(int x, int y) {
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 	
-	if(deliverySystem[x][y].cnt == 0)   //if storage is empty, input package's information
+	
+	storage_t storage = {0, 0, 0};
+	initStorage(x, y);
+	deliverySystem[x][y].building = nBuilding;
+	deliverySystem[x][y].room = nRoom;
+	strcpy(deliverySystem[x][y].passwd, passwd);
+	deliverySystem[x][y].context = msg;
+	deliverySystem[x][y].cnt = sizeof(deliverySystem[x][y].context);
+
+	if(deliverySystem[x][y].cnt <= 0)
 	{
-		storage_t storage = {0, 0, 0};
-		initStorage(x, y);
-		deliverySystem[x][y].building = nBuilding;
-		deliverySystem[x][y].room = nRoom;
-		strcpy(deliverySystem[x][y].passwd, passwd);
-		deliverySystem[x][y].context = msg;
-		deliverySystem[x][y].cnt = sizeof(deliverySystem[x][y].context);
-		
-		storedCnt++;
-		
-		return 0;
-		
-	}
-	else
 		return -1;
+	}		
+	storedCnt++;
+	
+	return 0;
+		
+	
+	
+
 }
 
 
