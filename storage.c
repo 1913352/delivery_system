@@ -153,7 +153,7 @@ int str_createSystem(char* filepath) {
 		{
 			int x=-1, y=-1;   //set x,y -> -1
 			storage_t storage = {.passwd={}, .context=(char*)malloc(sizeof(char) * (MAX_MSG_SIZE+1))};
-			fscanf(fp, "%d %d %d %d %s %s", &x, &y, &deliverySystem[x][y].building, &deliverySystem[x][y].room, deliverySystem[x][y].passwd, deliverySystem[x][y].context);
+			fscanf(fp, "%d %d %d %d %s %s", &x, &y, &storage.building, &storage.room, &storage.passwd, storage.context);
 			
 			if (x>=0 && y>=0)
 			{
